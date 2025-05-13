@@ -1,0 +1,93 @@
+/* WP OpenTelemetry Pro Admin Styles */
+.wpotel-pro-badge {
+    background: #0073aa;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    margin-left: 5px;
+}
+
+.wpotel-tab-content {
+    background: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin-top: -1px;
+}
+
+.nav-tab-wrapper {
+    margin-bottom: 0;
+}
+
+.wpotel-exporter-card {
+    border: 1px solid #e5e5e5;
+    padding: 15px;
+    margin-bottom: 20px;
+    background: #f9f9f9;
+}
+
+.wpotel-exporter-card h3 {
+    margin-top: 0;
+}
+
+.wpotel-metric {
+    display: inline-block;
+    margin-right: 30px;
+    margin-bottom: 15px;
+}
+
+.wpotel-metric-label {
+    display: block;
+    font-weight: bold;
+    color: #666;
+    font-size: 12px;
+}
+
+.wpotel-metric-value {
+    font-size: 24px;
+    color: #0073aa;
+}
+
+.wpotel-metric-value.warning {
+    color: #f0b849;
+}
+
+.wpotel-metric-value.error {
+    color: #dc3232;
+}
+
+.wpotel-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+/* Ensure first tab is visible by default */
+.wpotel-tab-content:first-of-type {
+    display: block;
+}
+
+/* Hide all other tabs initially */
+.wpotel-tab-content:not(:first-of-type) {
+    display: none;
+}
+
+/* Ensure form elements are accessible */
+.wpotel-tab-content input[type="text"],
+.wpotel-tab-content input[type="number"],
+.wpotel-tab-content select,
+.wpotel-tab-content textarea {
+    pointer-events: auto;
+    cursor: text;
+}
+
+/* License tab specific styles */
+#license input[type="text"] {
+    width: 300px;
+}
+
+#license-result {
+    display: inline-block;
+    margin-left: 10px;
+}
