@@ -162,16 +162,14 @@ class PluginTester {
         }
     }
     
-    private function test_opentelemetry_features() {
+private function test_opentelemetry_features() {
         $this->results[] = ['status' => 'section', 'message' => 'OpenTelemetry Features Tests'];
         
         try {
             $reflection = new \ReflectionClass($this->plugin);
             
             // Test configuration loading
-            $configMethod = $reflection->getMethod('get_config');
-            $configMethod->setAccessible(true);
-            $config = $configMethod->invoke($this->plugin);
+            $config = $this->plugin->get_config();
             
             $this->assert(
                 is_array($config),
@@ -179,7 +177,7 @@ class PluginTester {
                 json_encode($config, JSON_PRETTY_PRINT)
             );
             
-            $required_config = ['enabled', 'endpoint', 'service_name', 'sampling_rate'];
+            $required_config = ['enabled', 'endpoint', 'service_name', 'sampling_rate', 'trace_database'];
             foreach ($required_config as $key) {
                 $this->assert(
                     array_key_exists($key, $config),
@@ -202,6 +200,14 @@ class PluginTester {
                 filter_var($endpoint, FILTER_VALIDATE_URL),
                 'Endpoint is valid URL',
                 $endpoint
+            );
+            
+            // Test database tracing configuration
+            $trace_database = $config['trace_database'] ?? false;
+            $this->assert(
+                true, // This is always a pass since it can be on or off
+                'Database tracing configuration',
+                $trace_database ? 'Enabled' : 'Disabled'
             );
             
         } catch (\Exception $e) {

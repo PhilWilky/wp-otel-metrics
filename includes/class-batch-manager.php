@@ -129,17 +129,18 @@ class BatchManager {
         $zipkin_spans = [];
         
         foreach ($batch as $trace) {
-            if (isset($trace['spans'][0])) {
-                $span = $trace['spans'][0];
+            // Process ALL spans in each trace, not just the first one
+            foreach ($trace['spans'] as $span) {
                 $tags = [];
                 
+                // Convert tags from array format to object format
                 foreach ($span['tags'] as $tag) {
                     $tags[$tag['key']] = (string)$tag['value'];
                 }
                 
-                $zipkin_spans[] = [
+                $zipkin_span = [
                     'id' => $span['spanID'],
-                    'traceId' => $span['traceID'],
+                    'traceId' => $trace['traceID'], // Use trace ID from trace root
                     'name' => $span['operationName'],
                     'timestamp' => (int)$span['startTime'],
                     'duration' => (int)$span['duration'],
@@ -148,6 +149,35 @@ class BatchManager {
                     ],
                     'tags' => $tags
                 ];
+                
+                // Add parent relationship if it exists
+                if (isset($span['parentSpanID'])) {
+                    $zipkin_span['parentId'] = $span['parentSpanID'];
+                }
+                
+                $zipkin_spans[] = $zipkin_span;
+            }
+        }
+        
+        if ($this->config['debug_mode']) {
+            error_log(sprintf(
+                '[WP OpenTelemetry] Converted batch to Zipkin: %d total spans from %d traces',
+                count($zipkin_spans),
+                count($batch)
+            ));
+            
+            // Log span breakdown
+            $span_types = [];
+            foreach ($zipkin_spans as $span) {
+                $span_types[$span['name']] = ($span_types[$span['name']] ?? 0) + 1;
+            }
+            
+            foreach ($span_types as $type => $count) {
+                error_log(sprintf(
+                    '[WP OpenTelemetry] - %s: %d spans',
+                    $type,
+                    $count
+                ));
             }
         }
         
